@@ -1,0 +1,19 @@
+{
+  "version": "independent",
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "packages": ["libs/*", "services/*"],
+  "command": {
+    "bootstrap": {
+      "npmClientArgs": ["--network-timeout 15000", "--network-concurrency 8", "--verbose"]
+    },
+    "version": {
+      "conventionalCommits": true,
+      "allowBranch": ["master", "dev"],
+      "message": "chore(release): publish"
+    },
+    "publish": {
+      "ignoreChanges": ["(npm|yarn).lock", "*.md", "**/__tests__/**", "**/__fixtures__/**"]
+    }
+  }
+}

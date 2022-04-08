@@ -1,0 +1,17 @@
+# Third party
+/.git
+lerna.json
+package.json
+tsconfig.*
+**/node_modules
+
+# Temp
+**/.cache
+
+# Build products
+**/build
+**/dist
+
+# Tests
+**/fixtures
+**/coverage

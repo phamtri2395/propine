@@ -1,0 +1,95 @@
+{
+  "name": "@propine/mono",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Propine assessment monorepo",
+  "engines": {
+    "node": ">= 14.0.0",
+    "yarn": ">= 1.22.0"
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:phamtri2395/propine.git"
+  },
+  "scripts": {
+    "prepare": "husky install",
+    "clean": "lerna run --parallel clean",
+    "type-check": "lerna run --parallel type-check",
+    "build": "lerna run --parallel build",
+    "test": "lerna run --parallel --stream test",
+    "test:cov": "lerna run --parallel --stream test:cov",
+    "test:e2e": "lerna run --parallel --stream test:e2e",
+    "lerna:changed": "lerna changed --json > lerna-changes.json",
+    "lerna:version": "lerna version --conventional-commits --no-push",
+    "lerna:publish": "lerna publish from-package",
+    "lint": "eslint . --color --ignore-path ./.eslintignore",
+    "ecosystem:local": "docker-compose -f docker-compose.local.yml"
+  },
+  "resolutions": {},
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^16.2.3",
+    "@commitlint/config-conventional": "^16.2.1",
+    "@commitlint/config-lerna-scopes": "^16.2.2",
+    "@typescript-eslint/eslint-plugin": "^5.18.0",
+    "@typescript-eslint/parser": "^5.18.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^8.12.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-babel-module": "^5.3.1",
+    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.4.0",
+    "eslint-plugin-security": "^1.4.0",
+    "husky": "^7.0.4",
+    "lerna": "^4.0.0",
+    "lint-staged": "^12.3.7",
+    "prettier": "^2.6.2"
+  },
+  "workspaces": {
+    "packages": [
+      "libs/*",
+      "services/*"
+    ],
+    "nohoist": []
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": true,
+    "jsxSingleQuote": true,
+    "trailingComma": "es5",
+    "bracketSpacing": true,
+    "jsxBracketSameLine": false,
+    "arrowParens": "always",
+    "endOfLine": "lf"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional",
+      "@commitlint/config-lerna-scopes"
+    ],
+    "rules": {
+      "header-max-length": [
+        2,
+        "always",
+        120
+      ]
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --color --ignore-path ./.eslintignore"
+    ]
+  }
+}
