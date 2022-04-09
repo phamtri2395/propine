@@ -2,7 +2,7 @@
   "version": "independent",
   "npmClient": "yarn",
   "useWorkspaces": true,
-  "packages": ["libs/*", "services/*"],
+  "packages": ["libs/*", "services/*", "apps/*"],
   "command": {
     "bootstrap": {
       "npmClientArgs": ["--network-timeout 15000", "--network-concurrency 8", "--verbose"]
