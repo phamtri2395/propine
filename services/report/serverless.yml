@@ -1,0 +1,24 @@
+service: serverless-report
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 50003
+    lambdaPort: 50023
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+
+functions:
+  main:
+    handler: dist/main.handler
+    events:
+      - http:
+          method: ANY
+          path: /
+      - http:
+          method: ANY
+          path: '{proxy+}'
