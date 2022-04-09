@@ -24,7 +24,7 @@
     "lerna:version": "lerna version --conventional-commits --no-push",
     "lerna:publish": "lerna publish from-package",
     "lint": "eslint . --color --ignore-path ./.eslintignore",
-    "ecosystem:local": "docker-compose -f docker-compose.local.yml"
+    "ecosystem:local": "docker-compose -f ecosystem.local.yml"
   },
   "resolutions": {},
   "dependencies": {
