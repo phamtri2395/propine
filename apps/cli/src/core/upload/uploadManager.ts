@@ -1,8 +1,7 @@
 /* eslint-disable security/detect-non-literal-fs-filename */
 
-import { extname } from 'path';
+import { extname, basename } from 'path';
 import fs from 'fs-extra';
-import {} from '@oclif/core';
 import { __, includes, lte } from 'lodash/fp';
 
 import { UploadEngine } from './types';
@@ -35,15 +34,17 @@ export class UploadManager {
     this.uploadEngine = uploadEngine;
   }
 
-  public async upload(path: string): Promise<boolean> {
+  public async upload(path: string, overriddenFileName?: string): Promise<boolean> {
     const [isFileValid, fileStats] = await UploadManager.validateFile(path);
 
     if (!isFileValid) return false;
 
-    if (!isSizeLessOrEqualThan20MB(fileStats.size)) return this.uploadEngine.upload(path);
+    const fileName = overriddenFileName ?? basename(path);
+
+    if (!isSizeLessOrEqualThan20MB(fileStats.size)) return this.uploadEngine.upload(path, fileName);
 
     const readStream = fs.createReadStream(path);
 
-    return this.uploadEngine.stream(readStream);
+    return this.uploadEngine.stream(readStream, fileName);
   }
 }

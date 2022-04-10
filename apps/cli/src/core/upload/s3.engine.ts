@@ -4,6 +4,7 @@ import fs from 'fs-extra';
 import AWS from 'aws-sdk';
 import s3UploadStream from 's3-upload-stream';
 
+import { Config } from '../../common/config';
 import { UploadEngine } from './types';
 
 export class S3Engine implements UploadEngine {
@@ -15,21 +16,19 @@ export class S3Engine implements UploadEngine {
     this.s3Instance = new AWS.S3(config);
   }
 
-  public static getInstance(
-    config: AWS.S3.ClientConfiguration = { endpoint: 'http://localhost:4566', s3ForcePathStyle: true }
-  ): S3Engine {
+  public static getInstance(config: AWS.S3.ClientConfiguration = Config.s3DefaultConfig): S3Engine {
     if (!S3Engine.instance) S3Engine.instance = new S3Engine(config);
 
     return S3Engine.instance;
   }
 
-  public async upload(path: string): Promise<boolean> {
+  public async upload(path: string, fileName: string): Promise<boolean> {
     const file = await fs.readFile(path);
 
     return this.s3Instance
       .upload({
-        Bucket: 'test',
-        Key: 'key-name',
+        Bucket: Config.s3ReportBucket,
+        Key: fileName,
         Body: file,
       })
       .promise()
@@ -37,12 +36,12 @@ export class S3Engine implements UploadEngine {
       .catch(() => false);
   }
 
-  public async stream(readStream: fs.ReadStream): Promise<boolean> {
+  public async stream(readStream: fs.ReadStream, fileName: string): Promise<boolean> {
     const s3Stream = s3UploadStream(this.s3Instance);
 
     const upload = s3Stream.upload({
-      Bucket: 'test',
-      Key: 'key-name',
+      Bucket: Config.s3ReportBucket,
+      Key: fileName,
     });
 
     readStream.pipe(upload);

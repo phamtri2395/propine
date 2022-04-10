@@ -1,5 +1,6 @@
 import { Command } from '@oclif/core';
 
+import { logger } from '../../common/logger';
 import { UploadManager, S3Engine } from '../../core/upload';
 
 interface Args {
@@ -18,12 +19,12 @@ export default class UploadReport extends Command {
       args: { filePath },
     } = await this.parse<Record<string, never>, Args>(UploadReport);
 
-    this.log(`Uploading ${filePath}...`);
+    logger.info(`Uploading ${filePath}...`);
 
     const uploadManager = new UploadManager(S3Engine.getInstance());
 
     const success = await uploadManager.upload(filePath);
 
-    console.log('success', success);
+    logger.info(success);
   }
 }
