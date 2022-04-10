@@ -8,7 +8,8 @@ services:
       - 8000:8000
 
   dynamodb-admin:
-    image: aaronshaf/dynamodb-admin
+    image: aaronshaf/dynamodb-admin:latest
+    container_name: dynamodb-local-admin
     ports:
       - '8001:8001'
     environment:
@@ -18,3 +19,14 @@ services:
       AWS_SECRET_ACCESS_KEY: local
     depends_on:
       - dynamodb-local
+
+  s3-local:
+    image: localstack/localstack:latest
+    container_name: s3-local
+    ports:
+      - 4566:4566
+    environment:
+      - SERVICES=s3
+      - AWS_DEFAULT_REGION=localhost
+      - USE_SSL=false
+      - DEBUG=1
