@@ -3,7 +3,17 @@
     "baseUrl": ".",
     "rootDir": "src",
     "outDir": "dist",
-    "paths": {},
+    "paths": {
+      "@core/*": [
+        "src/core/*"
+      ],
+      "@common/*": [
+        "src/common/*"
+      ],
+      "@commands/*": [
+        "src/commands/*"
+      ]
+    },
     "target": "es2020",
     "module": "commonjs",
     "moduleResolution": "node",
