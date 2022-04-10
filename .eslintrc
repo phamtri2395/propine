@@ -51,6 +51,7 @@
     "no-shadow": "off",
     "arrow-body-style": "off",
     "no-useless-constructor": "off",
+    "no-use-before-define": "off",
     "import/prefer-default-export": "off",
     "@typescript-eslint/no-parameter-properties": "off",
     "react/function-component-definition": "off",
@@ -78,9 +79,19 @@
         }
       }
     ],
-    "@typescript-eslint/no-shadow": [
-      "error"
+    "@typescript-eslint/no-shadow": "error",
+    "@typescript-eslint/no-useless-constructor": "error",
+    "@typescript-eslint/no-empty-function": [
+      "error",
+      {
+        "allow": [
+          "private-constructors",
+          "protected-constructors",
+          "decoratedFunctions"
+        ]
+      }
     ],
+    "@typescript-eslint/no-use-before-define": "error",
     "jsx-quotes": [
       "error",
       "prefer-single"

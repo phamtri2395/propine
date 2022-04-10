@@ -12,16 +12,5 @@
       ]
     }
   },
-  "rules": {
-    "import/no-unresolved": [
-      "error",
-      {
-        "ignore": [
-          "@core",
-          "@common",
-          "@commands"
-        ]
-      }
-    ],
-  }
+  "rules": {}
 }

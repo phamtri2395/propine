@@ -1,5 +1,11 @@
 import { Command } from '@oclif/core';
 
+import { UploadManager, S3Engine } from '../../core/upload';
+
+interface Args {
+  filePath: string;
+}
+
 export default class UploadReport extends Command {
   public static description = 'Upload transaction report file';
 
@@ -8,8 +14,16 @@ export default class UploadReport extends Command {
   public static args = [{ name: 'filePath', description: 'Absolute path to the report file', required: true }];
 
   public async run(): Promise<void> {
-    const { args } = await this.parse(UploadReport);
+    const {
+      args: { filePath },
+    } = await this.parse<Record<string, never>, Args>(UploadReport);
 
-    this.log(`Upload ${args.filePath}`);
+    this.log(`Uploading ${filePath}...`);
+
+    const uploadManager = new UploadManager(S3Engine.getInstance());
+
+    const success = await uploadManager.upload(filePath);
+
+    console.log('success', success);
   }
 }
