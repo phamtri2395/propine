@@ -1,0 +1,31 @@
+{
+  "name": "@propine/logger",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Logger",
+  "keywords": [],
+  "workspaces": {
+    "nohoist": []
+  },
+  "main": "dist/index.js",
+  "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "type-check": "tsc --noemit",
+    "clean": "rimraf dist *.tsbuildinfo",
+    "build": "tsc -b tsconfig.json",
+    "test": "jest --color --config jest.config.js --passWithNoTests",
+    "test:cov": "jest --color --coverage --config jest.config.js --passWithNoTests",
+    "prepack": "npm run clean && npm run build"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.23",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.4",
+    "typescript": "^4.6.3"
+  }
+}
