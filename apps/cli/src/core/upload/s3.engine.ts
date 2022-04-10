@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import AWS from 'aws-sdk';
 import s3UploadStream from 's3-upload-stream';
 
-import { Config } from '../../common/config';
+import { Config, ENV } from '../../common/config';
 import { UploadEngine } from './types';
 
 export class S3Engine implements UploadEngine {
@@ -16,6 +16,12 @@ export class S3Engine implements UploadEngine {
     this.s3Instance = new AWS.S3(config);
   }
 
+  private async provisioning(): Promise<void> {
+    if (Config.env === ENV.DEVELOPMENT) {
+      await this.s3Instance.createBucket({ Bucket: Config.s3ReportBucket }).promise();
+    }
+  }
+
   public static getInstance(config: AWS.S3.ClientConfiguration = Config.s3DefaultConfig): S3Engine {
     if (!S3Engine.instance) S3Engine.instance = new S3Engine(config);
 
@@ -23,6 +29,8 @@ export class S3Engine implements UploadEngine {
   }
 
   public async upload(path: string, fileName: string): Promise<boolean> {
+    await this.provisioning();
+
     const file = await fs.readFile(path);
 
     return this.s3Instance
@@ -37,6 +45,8 @@ export class S3Engine implements UploadEngine {
   }
 
   public async stream(readStream: fs.ReadStream, fileName: string): Promise<boolean> {
+    await this.provisioning();
+
     const s3Stream = s3UploadStream(this.s3Instance);
 
     const upload = s3Stream.upload({
