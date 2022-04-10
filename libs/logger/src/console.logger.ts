@@ -8,7 +8,7 @@ import { LoggerService, LogLevel } from './types';
 
 const Theme: Record<LogLevel, Chalk> = {
   [LogLevel.LOG]: chalk.white,
-  [LogLevel.INFO]: chalk.green,
+  [LogLevel.INFO]: chalk.blueBright,
   [LogLevel.WARN]: chalk.yellow,
   [LogLevel.ERROR]: chalk.red,
   [LogLevel.DEBUG]: chalk.blue,
