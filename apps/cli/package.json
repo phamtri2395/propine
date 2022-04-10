@@ -1,0 +1,46 @@
+{
+  "name": "@propine/cli",
+  "version": "0.0.0",
+  "private": true,
+  "description": "CLI",
+  "keywords": [],
+  "workspaces": {
+    "nohoist": []
+  },
+  "main": "dist/index.js",
+  "files": [
+    "/bin",
+    "/dist",
+    "/oclif.manifest.json"
+  ],
+  "bin": {
+    "propine": "./bin/run"
+  },
+  "scripts": {
+    "build": "shx rm -rf dist && tsc -b",
+    "lint": "eslint . --ext .ts --config .eslintrc",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "prepack": "yarn build && oclif manifest"
+  },
+  "dependencies": {
+    "@oclif/core": "^1.6.4",
+    "@oclif/plugin-help": "^5.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.23",
+    "oclif": "^2.6.3",
+    "shx": "^0.3.4",
+    "ts-node": "^10.7.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.6.3"
+  },
+  "oclif": {
+    "bin": "propine",
+    "dirname": "propine",
+    "commands": "./dist/commands",
+    "topicSeparator": " ",
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
+  }
+}
