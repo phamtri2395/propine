@@ -21,10 +21,18 @@ export default class UploadReport extends Command {
 
     logger.info(`Uploading ${filePath}...`);
 
+    const fileName = `${Date.now()}.csv`;
     const uploadManager = new UploadManager(S3Engine.getInstance());
 
-    const success = await uploadManager.upload(filePath);
+    const success = await uploadManager.upload(filePath, fileName);
 
-    logger.info(success);
+    if (!success) {
+      logger.error('Something went wrong while uploading report file 😞');
+      return;
+    }
+
+    logger.info(
+      'Upload report file success ✨. Now let try to get some of your transaction data by running: propine portfolio'
+    );
   }
 }
