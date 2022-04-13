@@ -41,10 +41,10 @@ export class UploadManager {
 
     const fileName = overriddenFileName ?? basename(path);
 
-    if (!isSizeLessOrEqualThan20MB(fileStats.size)) return this.uploadEngine.upload(path, fileName);
+    if (isSizeLessOrEqualThan20MB(fileStats.size)) return this.uploadEngine.upload(path, fileName, fileStats);
 
     const readStream = fs.createReadStream(path);
 
-    return this.uploadEngine.stream(readStream, fileName);
+    return this.uploadEngine.stream(readStream, fileName, fileStats);
   }
 }

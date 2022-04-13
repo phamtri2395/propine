@@ -1,8 +1,9 @@
 /* eslint-disable security/detect-non-literal-fs-filename */
 
-import fs from 'fs-extra';
+import fs, { Stats } from 'fs-extra';
 import AWS from 'aws-sdk';
 import s3UploadStream from 's3-upload-stream';
+import CliProgress from 'cli-progress';
 
 import { Config, ENV } from '../../common/config';
 import { UploadEngine } from './types';
@@ -44,7 +45,7 @@ export class S3Engine implements UploadEngine {
       .catch(() => false);
   }
 
-  public async stream(readStream: fs.ReadStream, fileName: string): Promise<boolean> {
+  public async stream(readStream: fs.ReadStream, fileName: string, stats: Stats): Promise<boolean> {
     await this.provisioning();
 
     const s3Stream = s3UploadStream(this.s3Instance);
@@ -53,12 +54,28 @@ export class S3Engine implements UploadEngine {
       Bucket: Config.s3ReportBucket,
       Key: fileName,
     });
+    upload.concurrentParts(4);
+
+    const progressBar = new CliProgress.SingleBar(
+      {
+        clearOnComplete: true,
+      },
+      CliProgress.Presets.rect
+    );
+    progressBar.start(stats.size, 0);
+
+    upload.on('part', (details) => {
+      progressBar.update(details.uploadedSize);
+    });
 
     readStream.pipe(upload);
 
     return new Promise((resolve) => {
       upload.on('error', () => resolve(false));
-      upload.on('uploaded', () => resolve(true));
+      upload.on('uploaded', () => {
+        resolve(true);
+        progressBar.stop();
+      });
     });
   }
 }

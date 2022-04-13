@@ -1,6 +1,6 @@
-import { ReadStream } from 'fs';
+import { ReadStream, Stats } from 'fs';
 
 export interface UploadEngine {
-  upload: (path: string, fileName: string) => Promise<boolean>;
-  stream: (readStream: ReadStream, fileName: string) => Promise<boolean>;
+  upload: (path: string, name: string, stats: Stats) => Promise<boolean>;
+  stream: (readStream: ReadStream, name: string, stats: Stats) => Promise<boolean>;
 }

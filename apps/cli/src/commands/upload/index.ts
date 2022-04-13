@@ -32,7 +32,7 @@ export default class UploadReport extends Command {
     }
 
     logger.info(
-      'Upload report file success ✨. Now let try to get some of your transaction data by running: propine portfolio'
+      'Upload report file successfully ✨. Now let try to get some of your transaction data by running: propine portfolio'
     );
   }
 }
