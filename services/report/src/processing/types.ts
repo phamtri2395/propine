@@ -1,4 +1,4 @@
-import { TransactionType } from '@prisma/client';
+import { TransactionType } from '@propine/prisma';
 
 export interface CsvTransactionRow {
   timestamp: string;

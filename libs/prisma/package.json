@@ -1,8 +1,8 @@
 {
-  "name": "@propine/logger",
+  "name": "@propine/prisma",
   "version": "0.0.0",
   "private": true,
-  "description": "Logger",
+  "description": "Prisma",
   "keywords": [],
   "workspaces": {
     "nohoist": []
@@ -10,22 +10,27 @@
   "main": "dist/index.js",
   "types": "dist/index.d.js",
   "files": [
+    "/schema.prisma",
+    "/migrations",
     "/dist"
   ],
   "scripts": {
     "type-check": "tsc --noemit",
     "clean": "rimraf dist *.tsbuildinfo",
-    "build": "tsc -b tsconfig.json",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "build": "npm run prisma:migrate:dev && tsc -b tsconfig.json",
     "test": "jest --color --config jest.config.js --passWithNoTests",
     "test:cov": "jest --color --coverage --config jest.config.js --passWithNoTests",
     "prepack": "npm run clean && npm run build"
   },
   "dependencies": {
-    "chalk": "^4.1.2"
+    "@prisma/client": "^3.12.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.23",
     "jest": "^27.5.1",
+    "prisma": "^3.12.0",
     "ts-jest": "^27.1.4",
     "typescript": "^4.6.3"
   }
