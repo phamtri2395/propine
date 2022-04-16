@@ -1,11 +1,11 @@
 import { Module, Global } from '@nestjs/common';
 
-import { S3Service } from './s3.service';
+import { AwsService } from './aws.service';
 
 @Global()
 @Module({
   imports: [],
-  providers: [S3Service],
-  exports: [S3Service],
+  providers: [AwsService],
+  exports: [AwsService],
 })
 export class AWSModule {}

@@ -1,0 +1,41 @@
+// DB
+
+datasource db {
+  provider = "postgresql"
+  // FIXME: for development purpose only, this value should be read from environment
+  url      = "postgresql://postgres:password@localhost:5432/postgres?schema=public"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+}
+
+model Transaction {
+  id Int @default(autoincrement())
+
+  timestamp       DateTime
+  transactionType TransactionType
+  token           String
+  amount          Float
+
+  @@unique([timestamp])
+}
+
+model LatestPortfolio {
+  token  String
+  amount Float
+
+  @@unique([token])
+}
+
+model Metadata {
+  id Int @id @default(autoincrement())
+
+  latestTransactionAt DateTime?
+  isReportIngesting   Boolean
+}

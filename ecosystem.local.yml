@@ -1,24 +1,16 @@
 version: '3.8'
 
 services:
-  dynamodb-local:
-    image: amazon/dynamodb-local:latest
-    container_name: dynamodb-local
-    ports:
-      - 8000:8000
-
-  dynamodb-admin:
-    image: aaronshaf/dynamodb-admin:latest
-    container_name: dynamodb-local-admin
-    ports:
-      - '8001:8001'
+  postgres:
+    image: timescale/timescaledb:latest-pg14
+    container_name: timescaledb
     environment:
-      DYNAMO_ENDPOINT: 'http://dynamodb-local:8000'
-      AWS_REGION: localhost
-      AWS_ACCESS_KEY_ID: local
-      AWS_SECRET_ACCESS_KEY: local
-    depends_on:
-      - dynamodb-local
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
 
   s3-local:
     image: localstack/localstack:latest
@@ -30,3 +22,7 @@ services:
       - AWS_DEFAULT_REGION=localhost
       - USE_SSL=false
       - DEBUG=1
+
+volumes:
+  db-data:
+    driver: local
