@@ -1,0 +1,27 @@
+{
+  "extends": "../../.eslintrc",
+  "env": {
+    "node": true,
+    "jest": true
+  },
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [
+        ".ts",
+        ".tsx"
+      ]
+    }
+  },
+  "rules": {
+    "import/no-unresolved": [
+      "error",
+      {
+        "ignore": [
+          "@core",
+          "@common",
+          "@modules"
+        ]
+      }
+    ],
+  }
+}
