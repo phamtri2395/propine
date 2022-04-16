@@ -1,13 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Prisma, TransactionType, Metadata } from '@prisma/client';
+import { Prisma, TransactionType, Metadata, LatestPortfolio } from '@prisma/client';
 import { CsvParserStream, parseStream } from 'fast-csv';
-import { toInteger, toFinite } from 'lodash/fp';
+import { map, toInteger, toFinite } from 'lodash/fp';
 import ora from 'ora';
 
 import { AppConfig } from '../config';
 import { AwsService } from '../aws';
 import { PrismaService } from '../prisma';
-import { CsvTransactionRow, TransformedTransactionRow } from './types';
+import { CsvTransactionRow, TransformedTransactionRow, Portfolio } from './types';
 
 @Injectable()
 export class ProcessingService {
@@ -39,7 +39,7 @@ export class ProcessingService {
         timestamp: new Date(toInteger(row.timestamp) * 1000),
         transactionType: <TransactionType>row.transaction_type,
         token: row.token,
-        amount: toFinite(row.token),
+        amount: toFinite(row.amount),
       })
     );
   }
@@ -57,11 +57,53 @@ export class ProcessingService {
     });
   }
 
-  private updateMetadata(payload: Prisma.MetadataUpdateInput): Promise<Metadata> {
+  private updateMetadata(id: number, payload: Prisma.MetadataUpdateInput): Promise<Metadata> {
     return this.prisma.metadata.update({
-      where: {},
+      where: {
+        id,
+      },
       data: payload,
     });
+  }
+
+  private static getLatestPortfolio(
+    { transactionType, token, amount }: TransformedTransactionRow,
+    currentPortfolio: Record<string, Portfolio>
+  ): Record<string, Portfolio> {
+    // eslint-disable-next-line security/detect-object-injection
+    const currentTokenPortfolio = currentPortfolio[token];
+    const addedAmount = transactionType === TransactionType.DEPOSIT ? amount : -amount;
+
+    if (!currentTokenPortfolio)
+      return {
+        ...currentPortfolio,
+        [token]: {
+          token,
+          amount,
+        },
+      };
+
+    return {
+      ...currentPortfolio,
+      [token]: {
+        ...currentTokenPortfolio,
+        amount: currentTokenPortfolio.amount + addedAmount,
+      },
+    };
+  }
+
+  private async persistLatestPortfolio(portfolio: Record<string, Portfolio>): Promise<LatestPortfolio[]> {
+    return Promise.all(
+      map(
+        ({ token, amount }) =>
+          this.prisma.latestPortfolio.upsert({
+            where: { token },
+            create: { token, amount },
+            update: { amount },
+          }),
+        portfolio
+      )
+    );
   }
 
   public async processReport(id: string): Promise<boolean> {
@@ -74,7 +116,27 @@ export class ProcessingService {
     const reportProcessingStream = this.getReportStream(id);
     let { latestTransactionAt } = metadata;
     let buffer: Prisma.TransactionCreateInput[] = [];
+    let latestPortfolio: Record<string, Portfolio> = {};
     let totalRowProcessed = 0;
+
+    const persistTransactions = async (): Promise<void> => {
+      if (buffer.length) {
+        reportProcessingStream.pause();
+
+        await this.prisma.transaction.createMany({
+          data: buffer,
+        });
+
+        await Promise.all([
+          this.updateMetadata(metadata.id, { latestTransactionAt }),
+          this.persistLatestPortfolio(latestPortfolio),
+        ]);
+
+        buffer = [];
+
+        reportProcessingStream.resume();
+      }
+    };
 
     return new Promise((resolve) => {
       reportProcessingStream
@@ -85,18 +147,9 @@ export class ProcessingService {
 
           buffer.push(row);
 
-          if (buffer.length >= ProcessingService.PROCESSING_BUFFER_LIMIT) {
-            reportProcessingStream.pause();
+          latestPortfolio = ProcessingService.getLatestPortfolio(row, latestPortfolio);
 
-            await this.prisma.transaction.createMany({
-              data: buffer,
-            });
-            await this.updateMetadata({ latestTransactionAt });
-
-            buffer = [];
-
-            reportProcessingStream.resume();
-          }
+          if (buffer.length >= ProcessingService.PROCESSING_BUFFER_LIMIT) await persistTransactions();
 
           totalRowProcessed += 1;
           const endTime = Date.now();
@@ -107,15 +160,17 @@ export class ProcessingService {
           this.logger.error(error);
           spinner.fail();
 
-          await this.updateMetadata({ isReportIngesting: false, latestTransactionAt });
+          await this.updateMetadata(metadata.id, { isReportIngesting: false, latestTransactionAt });
 
           resolve(false);
         })
         .on('end', async (rowCount: number) => {
+          await persistTransactions();
+
           this.logger.log(`Parsed ${rowCount} rows`);
           spinner.succeed();
 
-          await this.updateMetadata({ isReportIngesting: false, latestTransactionAt });
+          await this.updateMetadata(metadata.id, { isReportIngesting: false, latestTransactionAt });
 
           resolve(true);
         });

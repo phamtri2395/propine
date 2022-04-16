@@ -23,7 +23,7 @@ model Transaction {
   token           String
   amount          Float
 
-  @@unique([timestamp])
+  @@unique([id, timestamp])
 }
 
 model LatestPortfolio {

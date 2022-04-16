@@ -21,7 +21,7 @@ CREATE TABLE "Metadata" (
     CONSTRAINT "Metadata_pkey" PRIMARY KEY ("id")
 );
 -- CreateIndex
-CREATE UNIQUE INDEX "Transaction_timestamp_key" ON "Transaction"("timestamp");
+CREATE UNIQUE INDEX "Transaction_id_timestamp_key" ON "Transaction"("id", "timestamp");
 -- CreateIndex
 CREATE UNIQUE INDEX "LatestPortfolio_token_key" ON "LatestPortfolio"("token");
 -- Create hyper table

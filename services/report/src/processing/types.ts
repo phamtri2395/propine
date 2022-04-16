@@ -13,3 +13,8 @@ export interface TransformedTransactionRow {
   token: string;
   amount: number;
 }
+
+export interface Portfolio {
+  token: string;
+  amount: number;
+}
