@@ -8,6 +8,11 @@ import { PortfolioService } from './portfolio.service';
 export class PortfolioResolver {
   constructor(private readonly service: PortfolioService) {}
 
+  @Query(() => Boolean)
+  public isIngesting(): Promise<boolean> {
+    return this.service.getIngestionStatus();
+  }
+
   @Query(() => [Portfolio])
   public latestPortfolios(): Promise<Portfolio[]> {
     return this.service.findAllLatest();

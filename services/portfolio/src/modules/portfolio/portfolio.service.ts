@@ -11,6 +11,12 @@ import { Portfolio } from './portfolio.model';
 export class PortfolioService {
   constructor(private readonly prisma: PrismaService) {}
 
+  public async getIngestionStatus(): Promise<boolean> {
+    const metadata = await this.prisma.metadata.findFirst();
+
+    return Boolean(metadata?.isReportIngesting);
+  }
+
   public findAllLatest(): Promise<Portfolio[]> {
     return this.prisma.latestPortfolio.findMany();
   }
