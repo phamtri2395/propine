@@ -1,8 +1,5 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { GraphQLClient } from 'graphql-request';
 
 import { Config } from '../common/config';
 
-export const apolloClient = new ApolloClient({
-  uri: Config.portfolioEndpoint,
-  cache: new InMemoryCache(),
-});
+export const graphqlClient = new GraphQLClient(Config.portfolioEndpoint);

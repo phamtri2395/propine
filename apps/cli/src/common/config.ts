@@ -32,4 +32,8 @@ export class Config {
   public static get portfolioEndpoint(): string {
     return process.env.PORTFOLIO_ENDPOINT ?? 'http://localhost:50002/graphql';
   }
+
+  public static get cryptoCompareEndpoint(): string {
+    return process.env.CRYPTO_COMPARE_ENDPOINT ?? 'https://min-api.cryptocompare.com/data/price';
+  }
 }

@@ -1,2 +1,5 @@
-export { apolloClient } from './client';
+export { graphqlClient } from './client';
+
 export * from './queries';
+
+export * from './types';

@@ -40,11 +40,14 @@ export type QueryPortfoliosByDateArgs = {
   date: Scalars['String'];
 };
 
+export type Get_Ingestion_StatusQueryVariables = Exact<{ [key: string]: never }>;
+
+export type Get_Ingestion_StatusQuery = { __typename?: 'Query'; isIngesting: boolean };
+
 export type Get_Latest_PortfoliosQueryVariables = Exact<{ [key: string]: never }>;
 
 export type Get_Latest_PortfoliosQuery = {
   __typename?: 'Query';
-  isIngesting: boolean;
   latestPortfolios: Array<{ __typename?: 'Portfolio'; token: string; amount: number }>;
 };
 
@@ -54,7 +57,6 @@ export type Get_Latest_Portfolio_Of_TokenQueryVariables = Exact<{
 
 export type Get_Latest_Portfolio_Of_TokenQuery = {
   __typename?: 'Query';
-  isIngesting: boolean;
   latestPortfolio: { __typename?: 'Portfolio'; token: string; amount: number };
 };
 
@@ -64,7 +66,6 @@ export type Get_Portfolios_By_DateQueryVariables = Exact<{
 
 export type Get_Portfolios_By_DateQuery = {
   __typename?: 'Query';
-  isIngesting: boolean;
   portfoliosByDate: Array<{ __typename?: 'Portfolio'; token: string; amount: number }>;
 };
 
@@ -75,6 +76,5 @@ export type Get_Portfolio_Of_Token_By_DateQueryVariables = Exact<{
 
 export type Get_Portfolio_Of_Token_By_DateQuery = {
   __typename?: 'Query';
-  isIngesting: boolean;
   portfolioByDate: { __typename?: 'Portfolio'; token: string; amount: number };
 };
