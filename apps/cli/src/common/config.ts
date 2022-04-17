@@ -28,4 +28,8 @@ export class Config {
   public static get lambdaReportProcessingEndpoint(): string {
     return process.env.LAMBDA_REPORT_PROCESSING_ENDPOINT ?? 'http://localhost:50003/dev/process-report';
   }
+
+  public static get portfolioEndpoint(): string {
+    return process.env.PORTFOLIO_ENDPOINT ?? 'http://localhost:50002/graphql';
+  }
 }
