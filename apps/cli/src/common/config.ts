@@ -24,4 +24,8 @@ export class Config {
   public static get s3ReportBucket(): string {
     return process.env.AWS_S3_REPORT_BUCKET ?? 'reports';
   }
+
+  public static get lambdaReportProcessingEndpoint(): string {
+    return process.env.LAMBDA_REPORT_PROCESSING_ENDPOINT ?? 'http://localhost:50003/dev/process-report';
+  }
 }

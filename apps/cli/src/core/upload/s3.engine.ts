@@ -19,7 +19,10 @@ export class S3Engine implements UploadEngine {
 
   private async provisioning(): Promise<void> {
     if (Config.env === ENV.DEVELOPMENT) {
-      await this.s3Instance.createBucket({ Bucket: Config.s3ReportBucket }).promise();
+      await this.s3Instance
+        .createBucket({ Bucket: Config.s3ReportBucket })
+        .promise()
+        .catch(() => null);
     }
   }
 

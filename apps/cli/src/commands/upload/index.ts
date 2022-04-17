@@ -1,6 +1,8 @@
 import { Command } from '@oclif/core';
+import fetch from 'node-fetch';
 
 import { logger } from '../../common/logger';
+import { Config } from '../../common/config';
 import { UploadManager, S3Engine } from '../../core/upload';
 
 interface Args {
@@ -21,7 +23,8 @@ export default class UploadReport extends Command {
 
     logger.info(`Uploading ${filePath}...`);
 
-    const fileName = `${Date.now()}.csv`;
+    const timestamp = Date.now();
+    const fileName = `${timestamp}.csv`;
     const uploadManager = new UploadManager(S3Engine.getInstance());
 
     const success = await uploadManager.upload(filePath, fileName);
@@ -30,6 +33,11 @@ export default class UploadReport extends Command {
       logger.error('Something went wrong while uploading report file 😞');
       return;
     }
+
+    // FIXME: just for demo purpose
+    await fetch(`${Config.lambdaReportProcessingEndpoint}/${timestamp}`, { method: 'POST', timeout: 1000 }).catch(
+      () => null
+    );
 
     logger.info(
       'Upload report file successfully ✨. Now let try to get some of your transaction data by running: propine portfolio'
